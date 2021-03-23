@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31112.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComparatorServer", "ComparatorServer.csproj", "{FA6E17BA-84B5-48D9-8C04-F1B091CDE387}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FA6E17BA-84B5-48D9-8C04-F1B091CDE387}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA6E17BA-84B5-48D9-8C04-F1B091CDE387}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA6E17BA-84B5-48D9-8C04-F1B091CDE387}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA6E17BA-84B5-48D9-8C04-F1B091CDE387}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9C9FBCD3-A00F-49F1-B4B1-086FEA19D5A7}
+	EndGlobalSection
+EndGlobal
