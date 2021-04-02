@@ -53,7 +53,9 @@ namespace ComparatorServer
 
             for (int firstPairIndex = 0; firstPairIndex < hostsNumber; firstPairIndex++)
             {
-                for (int secondPairIndex = firstPairIndex + 1; secondPairIndex < hostsNumber; secondPairIndex++)
+                for (int secondPairIndex = firstPairIndex + 1; 
+                    secondPairIndex < hostsNumber && secondPairIndex < filesSortedBySize.Count(); 
+                    secondPairIndex++)
                 {
                     var firstItem = filesSortedBySize[firstPairIndex];
                     var secondItem = filesSortedBySize[secondPairIndex];
