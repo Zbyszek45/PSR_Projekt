@@ -44,6 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileComparison.cs" />
+    <Compile Include="CompareStrategy.cs" />
+    <Compile Include="TextFile.cs" />
     <Compile Include="FileManager.cs" />
     <Compile Include="Comparator.cs" />
     <Compile Include="Server.cs" />

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 
-namespace ComparatorUnitTests
+namespace ComparatorServerUnitTests
 {
     [TestClass]
     public class ComparatorTests
