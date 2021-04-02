@@ -10,7 +10,12 @@ namespace ComparatorServer
     {
         static void Main(string[] args)
         {
-            
+            var fileManager = new FileManager();
+
+            var files = fileManager.Unzip(fileName: "sample_archive.zip");
+
+            //Console.WriteLine(zip.Entries.Count);
+            Console.ReadLine();
         }
     }
 }
