@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 
-namespace ComparatorUnitTests
+namespace ComparatorServerUnitTests
 {
     [TestClass]
     public class ComparatorTests
@@ -17,7 +17,7 @@ namespace ComparatorUnitTests
             string source = "program test";
             string target = "programowanie";
 
-            var expectedResults = new List<string>() { "program" };
+            var expectedResults = new HashSet<string>() { "program" };
             var result = comparator.Compare(source, target);
 
             Assert.IsTrue(expectedResults.SequenceEqual(comparator.Compare(source, target)));
@@ -30,7 +30,7 @@ namespace ComparatorUnitTests
             string source = "ala ma kota";
             string target = "politechnika świętokrzyska";
 
-            var emptyList = new List<string>();
+            var emptyList = new HashSet<string>();
 
             Assert.IsTrue(emptyList.SequenceEqual(comparator.Compare(source, target)));
         }
@@ -42,7 +42,7 @@ namespace ComparatorUnitTests
             string source = "program";
             string target = "programowanie";
 
-            var expectedResults = new List<string>() { "program" };
+            var expectedResults = new HashSet<string>() { "program" };
             var result = comparator.Compare(source, target);
 
             Assert.IsTrue(expectedResults.SequenceEqual(comparator.Compare(source, target)));
@@ -55,7 +55,7 @@ namespace ComparatorUnitTests
             string source = "programowanie";
             string target = "program";
 
-            var expectedResults = new List<string>() { "program" };
+            var expectedResults = new HashSet<string>() { "program" };
             var result = comparator.Compare(source, target);
 
             Assert.IsTrue(expectedResults.SequenceEqual(comparator.Compare(source, target)));
@@ -68,7 +68,7 @@ namespace ComparatorUnitTests
             string source = "ala ma kota";
             string target = "ala ma psa";
 
-            var expectedResults = new List<string>() { "ala ma" };
+            var expectedResults = new HashSet<string>() { "ala ma" };
 
             Assert.IsTrue(expectedResults.SequenceEqual(comparator.Compare(source, target)));
         }
@@ -80,7 +80,7 @@ namespace ComparatorUnitTests
             string source = "ala ma kota a kot ma ale super zwierzaczek";
             string target = "ale ala ma psa a nie kota, super to tez jest zwierzaczek";
 
-            var expectedResults = new List<string>() { "ala ma", "super", "zwierzaczek" };
+            var expectedResults = new HashSet<string>() { "ala ma", "super", "zwierzaczek" };
 
             Assert.IsTrue(expectedResults.SequenceEqual(comparator.Compare(source, target)));
         }
@@ -92,7 +92,7 @@ namespace ComparatorUnitTests
             string source = "ala ma kota ala ma kota";
             string target = "ala ma psa ala nie ma psa";
 
-            var expectedResults = new List<string>() { "ala ma" };
+            var expectedResults = new HashSet<string>() { "ala ma" };
 
             Assert.IsTrue(expectedResults.SequenceEqual(comparator.Compare(source, target)));
         }
@@ -101,10 +101,10 @@ namespace ComparatorUnitTests
         public void TestSamePatternMultitpleTimesBoth()
         {
             var comparator = new Comparator(patternLength: 5, caseSensitive: true);
-            string source = "ala ma kota ala ma kota";
-            string target = "ala ma psa ala ma papugę";
+            string source = "ala ma kota ale ma kota";
+            string target = "ala ma psy ale ma papugę";
 
-            var expectedResults = new List<string>() { "ala ma", "ala ma" };
+            var expectedResults = new HashSet<string>() { "ala ma", "ale ma" };
 
             Assert.IsTrue(expectedResults.SequenceEqual(comparator.Compare(source, target)));
         }
@@ -113,10 +113,10 @@ namespace ComparatorUnitTests
         public void TestPolishCharacters()
         {
             var comparator = new Comparator(patternLength: 5, caseSensitive: true);
-            string source = "ala ma żółwika, super ąęśćóżźł";
-            string target = "ala lubi żółwika, nie jest ąęśćóżźł fajnie";
+            string source = "ala ma żółwika super ąęśćóżźł";
+            string target = "ala lubi żółwika nie jest ąęśćóżźł fajnie";
 
-            var expectedResults = new List<string>() { "żółwika", "ąęśćóżźł" };
+            var expectedResults = new HashSet<string>() { "żółwika", "ąęśćóżźł" };
 
             Assert.IsTrue(expectedResults.SequenceEqual(comparator.Compare(source, target)));
         }
@@ -125,7 +125,7 @@ namespace ComparatorUnitTests
         public void TestEmptyFiles()
         {
             var comparator = new Comparator(patternLength: 5, caseSensitive: true);
-            var emptyList = new List<string>();
+            var emptyList = new HashSet<string>();
 
             Assert.IsTrue(emptyList.SequenceEqual(comparator.Compare("test", "")));
             Assert.IsTrue(emptyList.SequenceEqual(comparator.Compare("", "test")));
@@ -139,7 +139,7 @@ namespace ComparatorUnitTests
             string source = "alan123";
             string target = "alan345";
 
-            var emptyList = new List<string>();
+            var emptyList = new HashSet<string>();
 
             Assert.IsTrue(emptyList.SequenceEqual(comparator.Compare(source, target)));
         }
