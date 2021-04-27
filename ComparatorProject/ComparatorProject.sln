@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31025.194
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComparatorServer", "ComparatorServer\ComparatorServer.csproj", "{5C5F3FBC-3876-48C6-B7C9-FB8DF886F695}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComparatorClient", "ComparatorClient\ComparatorClient.csproj", "{ECDB3407-9DCE-4E01-88FA-6641CCF656E0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5C5F3FBC-3876-48C6-B7C9-FB8DF886F695}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C5F3FBC-3876-48C6-B7C9-FB8DF886F695}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C5F3FBC-3876-48C6-B7C9-FB8DF886F695}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C5F3FBC-3876-48C6-B7C9-FB8DF886F695}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECDB3407-9DCE-4E01-88FA-6641CCF656E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECDB3407-9DCE-4E01-88FA-6641CCF656E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECDB3407-9DCE-4E01-88FA-6641CCF656E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECDB3407-9DCE-4E01-88FA-6641CCF656E0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7A167A80-96D5-4435-ABF4-EF5F6ECBC7DA}
+	EndGlobalSection
+EndGlobal
