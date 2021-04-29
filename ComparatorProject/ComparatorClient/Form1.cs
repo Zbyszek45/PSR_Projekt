@@ -10,12 +10,17 @@ using System.Windows.Forms;
 using System.Net.Sockets;
 using System.Threading;
 using System.Net;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Reflection;
+using CompStructures;
+using System.IO;
 
 namespace ComparatorClient
 {
     public partial class Form1 : Form
     {
         Socket s;
+        private BinaryFormatter bf = new BinaryFormatter();
         public Form1()
         {
             InitializeComponent();
@@ -59,16 +64,37 @@ namespace ComparatorClient
 
         private void waitForData()
         {
-            logBox.AppendText("Waiting for data");
-            Byte[] reveived = new byte[500];
-            NetworkStream stream = new NetworkStream(s);
-            stream.Read(reveived, 0, reveived.Length);
-            if (reveived.Length > 0)
+            try
             {
-                logBox.AppendText("data:");
-                string tmp = null;
-                tmp = System.Text.Encoding.UTF8.GetString(reveived);
-                logBox.AppendText(tmp + "\n");
+                logBox.AppendText("Waiting for data: \n");
+                NetworkStream stream = new NetworkStream(s);
+                FilesHeader fh = (FilesHeader)bf.Deserialize(stream);
+                logBox.AppendText("Wzorzec" + fh.patternLength.ToString()+"\n");
+                foreach (var name in fh.fileNames)
+                {
+                    logBox.AppendText(name+"\n");
+                    //var output = File.Create(@"files\" + name);
+                    using (var output = File.Create(@"files\" + name))
+                    {
+                        Console.WriteLine("Client connected. Starting to receive the file");
+                        // read the file in chunks of 1KB
+                        var buffer = new byte[16];
+                        int bytesRead;
+                        Console.WriteLine("start loop for");
+                        while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
+                        {
+                            Console.WriteLine("Still going..{0}", bytesRead);
+                            output.Write(buffer, 0, bytesRead);
+                            if (bytesRead < buffer.Length) break;
+                        }
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                logBox.AppendText(ex.ToString() + "\n");
             }
         }
 

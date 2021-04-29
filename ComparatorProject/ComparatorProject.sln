@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComparatorServer", "Compara
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComparatorClient", "ComparatorClient\ComparatorClient.csproj", "{ECDB3407-9DCE-4E01-88FA-6641CCF656E0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompStructures", "CompStructures\CompStructures.csproj", "{52D356D4-181D-43C0-81F5-59CBB6C772A8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{ECDB3407-9DCE-4E01-88FA-6641CCF656E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ECDB3407-9DCE-4E01-88FA-6641CCF656E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ECDB3407-9DCE-4E01-88FA-6641CCF656E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52D356D4-181D-43C0-81F5-59CBB6C772A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52D356D4-181D-43C0-81F5-59CBB6C772A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52D356D4-181D-43C0-81F5-59CBB6C772A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52D356D4-181D-43C0-81F5-59CBB6C772A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

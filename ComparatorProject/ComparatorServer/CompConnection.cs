@@ -9,9 +9,11 @@ using System.Net;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 using System.Windows.Forms;
+using CompStructures;
 
 namespace ComparatorServer
 {
+
     class Client
     {
         public Thread thread;
@@ -28,10 +30,14 @@ namespace ComparatorServer
         private bool shouldWait = true;
 
         public static RichTextBox log;
+        public static ListView fileList;
 
-        public CompConnection(RichTextBox l)
+        private BinaryFormatter bf = new BinaryFormatter();
+
+        public CompConnection(RichTextBox l, ListView lw)
         {
             log = l;
+            fileList = lw;
         }
 
         public void startServer(string adress, int port)
@@ -101,9 +107,31 @@ namespace ComparatorServer
             TcpClient client = ((Client)clients[index]).tcpClient;
             if (client.Connected && client != null)
             {
-                string str = "Ala ma kota";
-                Byte[] byteData = System.Text.Encoding.UTF8.GetBytes(str.ToCharArray());
-                client.GetStream().Write(byteData, 0, byteData.Length);
+                try
+                {
+                    FilesHeader newFH = new FilesHeader();
+                    newFH.patternLength = 4;
+                    newFH.fileNames = new List<string>();
+                    foreach (ListViewItem x in fileList.Items)
+                    {
+                        newFH.fileNames.Add(x.Text);
+                    }
+
+                    bf.Serialize(client.GetStream(), newFH);
+
+                    Socket socket = client.Client;
+ 
+                    foreach (ListViewItem x in fileList.Items)
+                    {
+                        string path = x.SubItems[1].Text;
+                        Console.WriteLine(path);
+                        socket.SendFile(path);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
             }
         }
 

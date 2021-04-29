@@ -20,7 +20,7 @@ namespace ComparatorServer
         public Form1()
         {
             InitializeComponent();
-            conn = new CompConnection(logMess);
+            conn = new CompConnection(logMess, fileListView);
         }
 
         private void chooseFileBttn_Click(object sender, EventArgs e)
@@ -98,6 +98,11 @@ namespace ComparatorServer
         private void compareBttn_Click(object sender, EventArgs e)
         {
             conn.startComparation();
+        }
+
+        private void fileListView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

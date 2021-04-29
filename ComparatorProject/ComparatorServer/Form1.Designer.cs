@@ -143,6 +143,7 @@ namespace ComparatorServer
             this.fileListView.TabIndex = 9;
             this.fileListView.UseCompatibleStateImageBehavior = false;
             this.fileListView.View = System.Windows.Forms.View.Details;
+            this.fileListView.SelectedIndexChanged += new System.EventHandler(this.fileListView_SelectedIndexChanged);
             // 
             // nameCol
             // 
