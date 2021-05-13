@@ -22,6 +22,7 @@ namespace ComparatorServer
 
     class CompConnection
     {
+        private FileManager fileM = new FileManager();
         private Encoding utf_8 = Encoding.UTF8;
         private TcpListener tcpLsn;
         Socket s;
@@ -90,8 +91,8 @@ namespace ComparatorServer
                 }
                 catch (ThreadInterruptedException)
                 {
-                    log.AppendText("Wątek oczekujący został przerwany przez Interupt\n");
-                    log.ScrollToCaret();
+                    //log.AppendText("Wątek oczekujący został przerwany przez Interupt\n");
+                    //log.ScrollToCaret();
                     return;
                 }
                 catch (Exception e)
@@ -107,37 +108,72 @@ namespace ComparatorServer
             TcpClient client = ((Client)clients[index]).tcpClient;
             if (client.Connected && client != null)
             {
+                List<FileComp> list;
+                // use lock
+                lock (fileM)
+                {
+                    list = fileM.getFilesToCompare(index);
+                }
                 try
                 {
                     FilesHeader newFH = new FilesHeader();
                     newFH.patternLength = 4;
                     newFH.fileNames = new List<string>();
-                    foreach (ListViewItem x in fileList.Items)
+                    foreach (FileComp x in list)
                     {
-                        newFH.fileNames.Add(x.Text);
+                        newFH.fileNames.Add(x.name);
                     }
 
+                    // serialize FileHeader and send to client
                     bf.Serialize(client.GetStream(), newFH);
 
                     Socket socket = client.Client;
- 
-                    foreach (ListViewItem x in fileList.Items)
+                    // loop that start sending files to client
+                    foreach (FileComp x in list)
                     {
-                        string path = x.SubItems[1].Text;
+                        lock (fileM)
+                        {
+                            if (fileM.checkIfClientHasFile(index, x))
+                            {
+                                continue;
+                            }
+                        }
+                        string path = x.path;
                         Console.WriteLine(path);
                         socket.SendFile(path);
+
+                        // wait for confirmation for one exact file
+                        Byte[] confData = new Byte[50];
+                        int rcv = client.Client.Receive(confData, confData.Length, 0);
+                        if (rcv <= 0)
+                        {
+                            break;
+                        }
                     }
+
+                    // wait fo results
+
+                    // temporary way to clean client
+                    FilesHeader finishFH = new FilesHeader();
+                    finishFH.patternLength = -1;
+                    finishFH.fileNames = new List<string>();
+                    bf.Serialize(client.GetStream(), finishFH);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.ToString());
                 }
+
             }
         }
 
-        public void startComparation()
+
+        public void startComparation(int ziarn)
         {
-            for (int i=0; i < clients.Count(); i++)
+            fileM.create_file_list(fileList, ziarn, clients.Count());
+
+
+            for (int i = 0; i < clients.Count(); i++)
             {
                 clients[i].thread.Start(i);
             }

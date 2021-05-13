@@ -188,6 +188,7 @@ namespace ComparatorServer
             this.wzorzBox.Name = "wzorzBox";
             this.wzorzBox.Size = new System.Drawing.Size(100, 22);
             this.wzorzBox.TabIndex = 13;
+            this.wzorzBox.Text = "4";
             // 
             // ziarnBox
             // 
@@ -195,6 +196,7 @@ namespace ComparatorServer
             this.ziarnBox.Name = "ziarnBox";
             this.ziarnBox.Size = new System.Drawing.Size(100, 22);
             this.ziarnBox.TabIndex = 14;
+            this.ziarnBox.Text = "300";
             // 
             // compareBttn
             // 

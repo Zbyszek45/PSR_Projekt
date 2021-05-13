@@ -97,7 +97,7 @@ namespace ComparatorServer
 
         private void compareBttn_Click(object sender, EventArgs e)
         {
-            conn.startComparation();
+            conn.startComparation(int.Parse(ziarnBox.Text));
         }
 
         private void fileListView_SelectedIndexChanged(object sender, EventArgs e)
