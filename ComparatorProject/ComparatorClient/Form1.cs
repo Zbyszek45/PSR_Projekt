@@ -20,12 +20,14 @@ namespace ComparatorClient
     public partial class Form1 : Form
     {
         int pattern = 0;
-        List<String> files = new List<string>();
         Socket s;
         private BinaryFormatter bf = new BinaryFormatter();
+        private ClientRespone cr = new ClientRespone();
+
         public Form1()
         {
             InitializeComponent();
+           
         }
 
         private void connectBttn_Click(object sender, EventArgs e)
@@ -72,34 +74,28 @@ namespace ComparatorClient
             {
                 try
                 {
-                    logBox.AppendText("Waiting for data: \n");
+                    // get header
                     Console.WriteLine("Waiting for data: ");
                     NetworkStream stream = new NetworkStream(s);
-
                     // deserialize and receive FileHeader
                     FilesHeader fh = (FilesHeader)bf.Deserialize(stream);
+                    pattern = fh.patternLength;
+                    //Console.WriteLine(fh);
 
-                    // if pattern will be -1 it mean that client should no longer work
+                    // check if should stop by pattern == -1
                     if (fh.patternLength == -1)
                     {
+                        Console.WriteLine("Should end");
                         clean();
                         break;
                     }
-                    pattern = fh.patternLength;
 
-                    logBox.AppendText("Wzorzec: " + fh.patternLength.ToString() + "\n");
-                    Console.WriteLine("Wzorzec: " + pattern.ToString());
-
-                    // loop that start receive files from server
-                    foreach (var name in fh.fileNames)
+                    // in loop get the files to compare
+                    foreach (FilePair fp in fh.pairs)
                     {
-                        logBox.AppendText(name + "\n");
-                        Console.WriteLine(name);
-
-                        using (var output = File.Create(@"files\" + name))
+                        Console.WriteLine(fp.f1);
+                        using (var output = File.Create(@"files\" + fp.f1))
                         {
-                            files.Add(@"files\" + name);
-                            Console.WriteLine("Client connected. Starting to receive the file");
                             var buffer = new byte[1024];
                             int bytesRead;
                             while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
@@ -107,7 +103,21 @@ namespace ComparatorClient
                                 output.Write(buffer, 0, bytesRead);
                                 if (bytesRead < buffer.Length) break;
                             }
-
+                            // sending confirmation for one exact file
+                            String conf = "Client odebrał plik";
+                            Byte[] confData = Encoding.UTF8.GetBytes(conf.ToCharArray());
+                            s.Send(confData, conf.Length, 0);
+                        }
+                        Console.WriteLine(fp.f2);
+                        using (var output = File.Create(@"files\" + fp.f2))
+                        {
+                            var buffer = new byte[1024];
+                            int bytesRead;
+                            while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
+                            {
+                                output.Write(buffer, 0, bytesRead);
+                                if (bytesRead < buffer.Length) break;
+                            }
                             // sending confirmation for one exact file
                             String conf = "Client odebrał plik";
                             Byte[] confData = Encoding.UTF8.GetBytes(conf.ToCharArray());
@@ -115,11 +125,14 @@ namespace ComparatorClient
                         }
                     }
 
-                    // do comparisios
-                    compareAllFiles();
+                    // start comparison
+                    foreach (FilePair fp in fh.pairs)
+                    {
+                        compareTwoFiles(fp.f1, fp.f2);
+                    }
 
                     // send result
-
+                    
 
                 }
                 catch (Exception ex)
@@ -149,8 +162,6 @@ namespace ComparatorClient
 
         private void clean()
         {
-            files.Clear();
-
             System.IO.DirectoryInfo di = new DirectoryInfo("files");
 
             foreach (FileInfo file in di.GetFiles())
@@ -159,21 +170,15 @@ namespace ComparatorClient
             }
         }
 
-        private void compareAllFiles()
+        private void compareTwoFiles(string f1, string f2)
         {
-            for (int i = 0; i < files.Count() - 1; i++)
-            {
-                for (int j = i + 1; j < files.Count(); j++)
-                {
-                    Console.WriteLine("Comparing {0} with {1}:", files[i], files[j]);
-                    compareTwoFiles(System.IO.File.ReadAllText(files[i]),
-                        System.IO.File.ReadAllText(files[j]));
-                }
-            }
-        }
-
-        private void compareTwoFiles(string file1, string file2)
-        {
+            FilesCompResult fcr = new FilesCompResult();
+            fcr.f1Name = f1;
+            fcr.f2Name = f2;
+            fcr.results = new List<FileSingleResult>();
+            string file1 = System.IO.File.ReadAllText(@"files\" + f1);
+            string file2 = System.IO.File.ReadAllText(@"files\" + f2);
+            
             int count = 0;
             for (int i = 0; i < file2.Length; i++)
             {
@@ -196,13 +201,33 @@ namespace ComparatorClient
                     }
                     if (count > pattern)
                     {
-                        Console.WriteLine("Znaleziono: {0}", i);
-                        Console.WriteLine(file2.Substring(i, count));
+                        //Console.WriteLine("Znaleziono: {0}", i);
+                        //Console.WriteLine(file2.Substring(i, count));
+                        fcr.add(new FilePos(j, j+count), new FilePos(i, i+count));
                         i += count;
                         break;
                     }
                 }
             }
+
+            // tmp show result
+            foreach (FileSingleResult fsr in fcr.results)
+            {
+                Console.WriteLine("#### RESULT ####");
+                Console.WriteLine("In file: {0}", f1);
+                foreach (FilePos fp in fsr.f1)
+                {
+                    Console.WriteLine("Indeks i,j: "+fp.i+","+fp.j+" - "+file1.Substring((int)fp.i, (int)(fp.j-fp.i)));
+                }
+                Console.WriteLine("In file: {0}", f2);
+                foreach (FilePos fp in fsr.f2)
+                {
+                    Console.WriteLine("Indeks i,j: " + fp.i + "," + fp.j + " - " + file2.Substring((int)fp.i, (int)(fp.j - fp.i)));
+                }
+            }
+
+            cr.res.Add(fcr);
+
         }
     }
 }

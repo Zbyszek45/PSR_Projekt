@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,67 +8,105 @@ using System.Windows.Forms;
 
 namespace ComparatorServer
 {
-    class ClientFM
-    {
-        public ClientFM(int x)
-        {
-            id = x;
-        }
-        public int id;
-        public List<FileComp> files = new List<FileComp>();
-    }
-
     class FileManager
     {
         private List<FileComp> files = new List<FileComp>();
-        private List<ClientFM> clients = new List<ClientFM>();
         private static int idGen = 0;
-        private int ziarn = 0;
+        private long ziarn = 0;
+        private List<FilePairRef> pairs = new List<FilePairRef>();
+        private int pattern;
 
-        public void create_file_list(ListView lw, int z, int client_count)
+        public void create_file_list(ListView lw, long z, int p)
         {
             ziarn = z;
+            pattern = p;
             files.Clear();
-            clients.Clear();
+            pairs.Clear();
             idGen = 0;
+            // Adding files to list
             foreach (ListViewItem x in lw.Items)
             {
                 files.Add(new FileComp(x.Text, idGen.ToString() , x.SubItems[1].Text));
                 idGen++;
             }
-
-            for (int i =0; i < client_count; i++)
+            // Sorting files with lambda
+            files.Sort((a, b) =>
             {
-                clients.Add(new ClientFM(i));
+                FileInfo f1 = new FileInfo(b.path);
+                FileInfo f2 = new FileInfo(a.path);
+                return (int)f1.Length - (int)f2.Length;
+            });
+
+            foreach (FileComp f in files)
+            {
+                Console.WriteLine(f);
             }
 
-            if (ziarn != 0 && files.Count() > 0)
+            // Creat the list of pairs needed to compare
+            for (int i=0; i<files.Count; i++)
             {
-
-            }
-        }
-
-        public List<FileComp> getFilesToCompare(int id)
-        {
-            return files;
-        }
-
-        public bool checkIfClientHasFile(int id, FileComp file)
-        {
-            foreach (FileComp f in clients[id].files)
-            {
-                if (f.name.Equals(file.name))
+                for (int j=i+1; j<files.Count; j++)
                 {
-                    return true;
+                    FilePairRef tmp = new FilePairRef(files[i], files[j]);
+                    tmp.lengthSum += new FileInfo(tmp.f1.path).Length;
+                    tmp.lengthSum += new FileInfo(tmp.f2.path).Length;
+                    pairs.Add(tmp);
                 }
             }
-            return false;
+
+            // tmp show pairs:
+            foreach (FilePairRef fp in pairs)
+            {
+                fp.wasChecked = false;
+                Console.WriteLine(fp);
+            }
+        }
+
+        public List<FilePairRef> getFilesToCompare()
+        {
+            // check if there is any left comparison
+            bool areAllChecked = true;
+            foreach (FilePairRef fp in pairs)
+            {
+                if (!fp.wasChecked)
+                {
+                    areAllChecked = false;
+                }
+            }
+            if (areAllChecked) return null;
+
+            // there is something to compare so...
+            List<FilePairRef> retFiles = new List<FilePairRef>();
+            long length = 0;
+            foreach (FilePairRef fp in pairs)
+            {
+                if (!fp.wasChecked)
+                {
+                    retFiles.Add(fp);
+                    fp.wasChecked = true;
+                    length += fp.lengthSum;
+                    if ((length / 1024) > ziarn) break;
+                }
+            }
+            /*
+            Console.WriteLine("Files that some client got: ");
+            foreach (FilePairRef fc in retFiles)
+            {
+                Console.WriteLine(fc);
+            }
+            */
+            return retFiles;
         }
 
         //seters geters
         public List<FileComp> get_file_list()
         {
             return files;
+        }
+
+        public int get_pattern()
+        {
+            return pattern;
         }
 
     }

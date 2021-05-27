@@ -11,13 +11,17 @@ namespace ComparatorServer
         public string orginalName;
         public string name;
         public string path;
-        public int weight;
 
         public FileComp(string orginalName, string name, string path)
         {
             this.orginalName = orginalName;
             this.name = name + ".txt";
             this.path = path;
+        }
+
+        public override string ToString()
+        {
+            return orginalName + " " + name + " " + path;
         }
     }
 }

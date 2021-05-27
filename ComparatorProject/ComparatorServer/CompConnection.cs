@@ -23,9 +23,8 @@ namespace ComparatorServer
     class CompConnection
     {
         private FileManager fileM = new FileManager();
-        private Encoding utf_8 = Encoding.UTF8;
         private TcpListener tcpLsn;
-        Socket s;
+
         Thread waitForClientsThread;
         List<Client> clients = new List<Client>();
         private bool shouldWait = true;
@@ -106,72 +105,76 @@ namespace ComparatorServer
         {
             int index = (int)i;
             TcpClient client = ((Client)clients[index]).tcpClient;
+
+            int pattern;
+
             if (client.Connected && client != null)
             {
-                List<FileComp> list;
-                // use lock
-                lock (fileM)
+                List<FilePairRef> list;
+                while (true)
                 {
-                    list = fileM.getFilesToCompare(index);
-                }
-                try
-                {
-                    FilesHeader newFH = new FilesHeader();
-                    newFH.patternLength = 4;
-                    newFH.fileNames = new List<string>();
-                    foreach (FileComp x in list)
+                    // use lock
+                    lock (fileM)
                     {
-                        newFH.fileNames.Add(x.name);
+                        list = fileM.getFilesToCompare();
+                        pattern = fileM.get_pattern();
                     }
-
-                    // serialize FileHeader and send to client
-                    bf.Serialize(client.GetStream(), newFH);
-
-                    Socket socket = client.Client;
-                    // loop that start sending files to client
-                    foreach (FileComp x in list)
+                    try
                     {
-                        lock (fileM)
+                        // send header, if stop then pattern = -1
+                        FilesHeader newFH = new FilesHeader();
+                        newFH.pairs = new List<FilePair>();
+                        newFH.patternLength = pattern;
+
+                        if (list == null)
                         {
-                            if (fileM.checkIfClientHasFile(index, x))
+                            Console.WriteLine("NULL Stop client");
+                            newFH.patternLength = -1;
+                            bf.Serialize(client.GetStream(), newFH);
+                            return;
+                        }
+                        else
+                        {
+                            foreach (FilePairRef fp in list)
                             {
-                                continue;
+                                newFH.pairs.Add(new FilePair(fp.f1.name, fp.f2.name));
                             }
+                            bf.Serialize(client.GetStream(), newFH);
                         }
-                        string path = x.path;
-                        Console.WriteLine(path);
-                        socket.SendFile(path);
 
-                        // wait for confirmation for one exact file
-                        Byte[] confData = new Byte[50];
-                        int rcv = client.Client.Receive(confData, confData.Length, 0);
-                        if (rcv <= 0)
+                        // in loop send files
+                        Socket socket = client.Client;
+                        foreach (FilePairRef fp in list)
                         {
-                            break;
+                            socket.SendFile(fp.f1.path);
+
+                            // wait for confirmation for one exact file
+                            Byte[] confData = new Byte[50];
+                            int rcv = client.Client.Receive(confData, confData.Length, 0);
+
+                            socket.SendFile(fp.f2.path);
+
+                            // wait for confirmation for one exact file
+                            confData = new Byte[50];
+                            rcv = client.Client.Receive(confData, confData.Length, 0);
                         }
+
+                        // wait for result
+
+                        
                     }
-
-                    // wait fo results
-
-                    // temporary way to clean client
-                    FilesHeader finishFH = new FilesHeader();
-                    finishFH.patternLength = -1;
-                    finishFH.fileNames = new List<string>();
-                    bf.Serialize(client.GetStream(), finishFH);
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.ToString());
+                    }
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.ToString());
-                }
-
             }
         }
 
 
-        public void startComparation(int ziarn)
+        public void startComparation(long ziarn, int p)
         {
-            fileM.create_file_list(fileList, ziarn, clients.Count());
-
+            fileM.create_file_list(fileList, ziarn, p);
 
             for (int i = 0; i < clients.Count(); i++)
             {

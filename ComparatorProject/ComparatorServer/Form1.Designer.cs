@@ -169,9 +169,9 @@ namespace ComparatorServer
             this.ziarnLabel.AutoSize = true;
             this.ziarnLabel.Location = new System.Drawing.Point(12, 334);
             this.ziarnLabel.Name = "ziarnLabel";
-            this.ziarnLabel.Size = new System.Drawing.Size(115, 17);
+            this.ziarnLabel.Size = new System.Drawing.Size(113, 17);
             this.ziarnLabel.TabIndex = 11;
-            this.ziarnLabel.Text = "Ziarnistość (MB):";
+            this.ziarnLabel.Text = "Ziarnistość (KB):";
             // 
             // wzorzLabel
             // 
