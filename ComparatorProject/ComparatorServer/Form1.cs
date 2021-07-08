@@ -19,6 +19,9 @@ namespace ComparatorServer
     {
         CompConnection conn;
         private List<FilesCompResult> res = new List<FilesCompResult>();
+
+        private int current_comp = 0;
+        private FilesCompResult current_fcr = null;
         
         public Form1()
         {
@@ -92,12 +95,6 @@ namespace ComparatorServer
             
         }
 
-
-        private void logMess_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void compareBttn_Click(object sender, EventArgs e)
         {
             conn.startComparation(long.Parse(ziarnBox.Text), int.Parse(wzorzBox.Text));
@@ -120,22 +117,120 @@ namespace ComparatorServer
                 res2ListView.Items[0].Selected = true;
                 res2ListView.Select();
             }
+
+            int calc_time = conn.get_calc_time();
+            timeBox.Text = calc_time.ToString();
         }
 
-        private void fileListView_SelectedIndexChanged(object sender, EventArgs e)
-        {
 
+        private void change_fcr()
+        {
+            if (res1ListView.Items.Count > 0 && res2ListView.Items.Count > 0)
+            {
+                current_comp = 0;
+
+                string path1 = res1ListView.SelectedItems[0].SubItems[1].Text;
+                string path2 = res2ListView.SelectedItems[0].SubItems[1].Text;
+                string namef1 = conn.get_name_by_uniq(path1);
+                string namef2 = conn.get_name_by_uniq(path2);
+
+                current_fcr = get_file_result(namef1, namef2);
+                Console.WriteLine("FCR: " + current_fcr);
+                show_comp();
+            }
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void show_comp()
         {
+            int addit = 20;
+            if (current_fcr != null)
+            {
+                string path1 = res1ListView.SelectedItems[0].SubItems[1].Text;
+                string path2 = res2ListView.SelectedItems[0].SubItems[1].Text;
+                string f1 = System.IO.File.ReadAllText(path1);
+                string f2 = System.IO.File.ReadAllText(path2);
+                FilePos fp1 = current_fcr.results[current_comp].f1;
+                FilePos fp2 = current_fcr.results[current_comp].f2;
+                
+                int start1, start2, end1, end2;
+                if (fp1.i > addit)
+                {
+                    start1 = (int)(fp1.i - addit);
+                }
+                else
+                {
+                    start1 = 0;
+                }
+                if (fp2.i > addit)
+                {
+                    start2 = (int)(fp2.i - addit);
+                }
+                else
+                {
+                    start2 = 0;
+                }
+                if (fp1.j + addit < f1.Length)
+                {
+                    end1 = (int)(fp1.j + addit);
+                }
+                else
+                {
+                    end1 = f1.Length;
+                }
+                if (fp2.j + addit < f2.Length)
+                {
+                    end2 = (int)(fp2.j + addit);
+                }
+                else
+                {
+                    end2 = f2.Length;
+                }
 
+                Res1Box.Text = f1.Substring(start1, end1-start1);
+                Res2Box.Text = f2.Substring(start2, end2-start2);
+            }
         }
 
-        private void res1ListView_SelectedIndexChanged(object sender, EventArgs e)
+        private FilesCompResult get_file_result(string namef1, string namef2)
         {
-           
-            
+            FilesCompResult ret = null;
+            foreach (FilesCompResult fcr in res)
+            {
+                if (String.Compare(fcr.f1Name, namef1) == 0 &&
+                    String.Compare(fcr.f2Name, namef2) == 0)
+                {
+                    ret = fcr;
+                }
+            }
+            return ret;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (String.Compare(res1ListView.SelectedItems[0].SubItems[1].Text, res2ListView.SelectedItems[0].SubItems[1].Text) != 0){
+                change_fcr(); 
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            if (current_comp > 0)
+            {
+                current_comp--;
+            }
+            show_comp();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (current_fcr != null)
+            {
+                if ((current_comp + 1) < current_fcr.results.Count)
+                {
+                    current_comp++;
+                }
+            }
+            show_comp();
         }
     }
 }

@@ -28,6 +28,7 @@ namespace ComparatorServer
         Thread waitForClientsThread;
         List<Client> clients = new List<Client>();
         private bool shouldWait = true;
+        private TimeManager timeM = new TimeManager();
 
         private List<FilesCompResult> res;
 
@@ -173,6 +174,10 @@ namespace ComparatorServer
                             Console.WriteLine("#### RESULT ####");
                             Console.WriteLine(fsr);
                         }
+                        lock (timeM)
+                        {
+                            timeM.add(index, neew.time);
+                        }
 
                     }
                     catch (Exception ex)
@@ -183,10 +188,15 @@ namespace ComparatorServer
             }
         }
 
+        internal int get_calc_time()
+        {
+            return timeM.get_best_time();
+        }
 
         public void startComparation(long ziarn, int p)
         {
             fileM.create_file_list(fileList, ziarn, p);
+            timeM.create_list(clients.Count());
 
             for (int i = 0; i < clients.Count(); i++)
             {
@@ -200,5 +210,11 @@ namespace ComparatorServer
 
             Console.WriteLine("############# ALL FINISHED ################");
         }
+
+        public String get_name_by_uniq(String f)
+        {
+            return fileM.get_by_uniq(f);
+        }
+
     }
 }

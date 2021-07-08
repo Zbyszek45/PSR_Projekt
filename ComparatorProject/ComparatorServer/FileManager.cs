@@ -109,5 +109,17 @@ namespace ComparatorServer
             return pattern;
         }
 
+        public String get_by_uniq(String f)
+        {
+            String s = "";
+            foreach (FileComp fc in files)
+            {
+                if (String.Compare(fc.path, f) == 0)
+                {
+                    s = fc.name;
+                }
+            }
+            return s;
+        }
     }
 }

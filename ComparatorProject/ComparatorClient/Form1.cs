@@ -14,6 +14,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Reflection;
 using CompStructures;
 using System.IO;
+using System.Diagnostics;
 
 namespace ComparatorClient
 {
@@ -23,6 +24,7 @@ namespace ComparatorClient
         Socket s;
         private BinaryFormatter bf = new BinaryFormatter();
         private ClientRespone cr = new ClientRespone();
+        Stopwatch stopwatch = new Stopwatch();
         private String dir = "files";
 
         public Form1()
@@ -129,7 +131,9 @@ namespace ComparatorClient
                             s.Send(confData, conf.Length, 0);
                         }
                     }
-
+                    cr = new ClientRespone();
+                    stopwatch = new Stopwatch();
+                    stopwatch.Start();
                     // start comparison
                     foreach (FilePair fp in fh.pairs)
                     {
@@ -137,7 +141,9 @@ namespace ComparatorClient
                         Console.WriteLine("Comparing: " + fp.f1 + fp.f2);
                         compareTwoFiles(fp.f1, fp.f2);
                     }
-
+                    stopwatch.Stop();
+                    TimeSpan ts = stopwatch.Elapsed;
+                    cr.time = ts.Seconds;
                     // send result
                     bf.Serialize(stream, cr);
 
@@ -185,43 +191,58 @@ namespace ComparatorClient
             fcr.f1Name = f1;
             fcr.f2Name = f2;
             fcr.results = new List<FileSingleResult>();
+
+           
             string file1 = System.IO.File.ReadAllText(@dir + f1);
             string file2 = System.IO.File.ReadAllText(@dir + f2);
             
-            int count = 0;
-            for (int i = 0; i < file2.Length; i++)
+            int counter = 0;
+            int j = 0;
+            for (int i = 0; i < file1.Length; i++)
             {
-                for (int j = 0; j < file1.Length; j++)
+                j = 0;
+                while (j < file2.Length)
                 {
-                    count = 0;
-                    while ((j + count) < file1.Length && (i + count) < file2.Length)
+                    counter = 0;
+                    int max = 0;
+                    while ((j + counter) < file2.Length && (i + counter) < file1.Length)
                     {
-
-                        if (file2[i + count] == file1[j + count]
-                            && (Char.IsLetterOrDigit(file2[i + count]) || Char.IsWhiteSpace(file2[i + count])))
+                        if (file1[i + counter] == file2[j + counter]
+                            && (Char.IsLetterOrDigit(file1[i + counter]) || Char.IsWhiteSpace(file1[i + counter])))
                         {
-                            count++;
+                            counter++;
                         }
-
                         else
                         {
                             break;
                         }
                     }
-                    if (count > pattern)
+
+                    if (counter > pattern)
                     {
                         //Console.WriteLine("Znaleziono: {0}", i);
                         //Console.WriteLine(file2.Substring(i, count));
-                        fcr.add(new FilePos(j, j+count), new FilePos(i, i+count));
-                        i += count;
-                        break;
+                        if (counter > max)
+                        {
+                            max = counter;
+                        }
+                        fcr.add(new FilePos(i, i + counter), new FilePos(j, j + counter));
+                       // fcr2.add(new FilePos(j, j + counter), new FilePos(i, i + counter));
+                        Console.WriteLine(file1.Substring(i, counter));
+                        j += counter;
                     }
+                    else
+                    {
+                        j += 1;
+                    }
+                    i += max;
                 }
             }
 
             // tmp show result
 
             cr.res.Add(fcr);
+           // cr.res.Add(fcr2);
 
         }
     }
