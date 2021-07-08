@@ -347,11 +347,11 @@ namespace ComparatorServer
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(596, 414);
+            this.label3.Location = new System.Drawing.Point(572, 414);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(64, 17);
+            this.label3.Size = new System.Drawing.Size(91, 17);
             this.label3.TabIndex = 28;
-            this.label3.Text = "Czas (s):";
+            this.label3.Text = "Czas obl. (s):";
             // 
             // timeBox
             // 

@@ -25,11 +25,16 @@ namespace ComparatorServer
 
         internal int get_best_time()
         {
+            int x = 0;
             for (int i = 0; i < times.Length; i++)
             {
-                Console.WriteLine(times[0] + " time\n");
+                if (times[i] > x)
+                {
+                    x = times[i];
+                }
+                Console.WriteLine(times[i] + " time\n");
             }
-            return times.Max();
+            return x;
         }
     }
 }
