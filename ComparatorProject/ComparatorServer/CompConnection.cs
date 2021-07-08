@@ -29,15 +29,18 @@ namespace ComparatorServer
         List<Client> clients = new List<Client>();
         private bool shouldWait = true;
 
+        private List<FilesCompResult> res;
+
         public static RichTextBox log;
         public static ListView fileList;
 
         private BinaryFormatter bf = new BinaryFormatter();
 
-        public CompConnection(RichTextBox l, ListView lw)
+        public CompConnection(RichTextBox l, ListView lw, List<FilesCompResult> res)
         {
             log = l;
             fileList = lw;
+            this.res = res;
         }
 
         public void startServer(string adress, int port)
@@ -160,8 +163,17 @@ namespace ComparatorServer
                         }
 
                         // wait for result
+                        ClientRespone neew = (ClientRespone)bf.Deserialize(client.GetStream());
+                        foreach (FilesCompResult fsr in neew.res)
+                        {
+                            lock (res)
+                            {
+                                res.Add(fsr);
+                            }
+                            Console.WriteLine("#### RESULT ####");
+                            Console.WriteLine(fsr);
+                        }
 
-                        
                     }
                     catch (Exception ex)
                     {
@@ -180,6 +192,13 @@ namespace ComparatorServer
             {
                 clients[i].thread.Start(i);
             }
+
+            for (int i = 0; i < clients.Count(); i++)
+            {
+                clients[i].thread.Join();
+            }
+
+            Console.WriteLine("############# ALL FINISHED ################");
         }
     }
 }

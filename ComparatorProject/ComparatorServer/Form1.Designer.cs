@@ -48,6 +48,20 @@ namespace ComparatorServer
             this.ziarnBox = new System.Windows.Forms.TextBox();
             this.compareBttn = new System.Windows.Forms.Button();
             this.logMess = new System.Windows.Forms.RichTextBox();
+            this.res1ListView = new System.Windows.Forms.ListView();
+            this.res2ListView = new System.Windows.Forms.ListView();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.nameColRes1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.pathColRes1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.nameColRes2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.pathColRes2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.richTextBox2 = new System.Windows.Forms.RichTextBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // adresLabel
@@ -220,11 +234,139 @@ namespace ComparatorServer
             this.logMess.Text = "";
             this.logMess.TextChanged += new System.EventHandler(this.logMess_TextChanged);
             // 
+            // res1ListView
+            // 
+            this.res1ListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.nameColRes1,
+            this.pathColRes1});
+            this.res1ListView.FullRowSelect = true;
+            this.res1ListView.HideSelection = false;
+            this.res1ListView.Location = new System.Drawing.Point(440, 42);
+            this.res1ListView.MultiSelect = false;
+            this.res1ListView.Name = "res1ListView";
+            this.res1ListView.Size = new System.Drawing.Size(220, 99);
+            this.res1ListView.TabIndex = 17;
+            this.res1ListView.UseCompatibleStateImageBehavior = false;
+            this.res1ListView.View = System.Windows.Forms.View.Details;
+            this.res1ListView.SelectedIndexChanged += new System.EventHandler(this.res1ListView_SelectedIndexChanged);
+            // 
+            // res2ListView
+            // 
+            this.res2ListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.nameColRes2,
+            this.pathColRes2});
+            this.res2ListView.HideSelection = false;
+            this.res2ListView.Location = new System.Drawing.Point(758, 42);
+            this.res2ListView.Name = "res2ListView";
+            this.res2ListView.Size = new System.Drawing.Size(218, 97);
+            this.res2ListView.TabIndex = 18;
+            this.res2ListView.UseCompatibleStateImageBehavior = false;
+            this.res2ListView.View = System.Windows.Forms.View.Details;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(440, 12);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(142, 17);
+            this.label1.TabIndex = 19;
+            this.label1.Text = "Wybierz pierwszy plik";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(755, 13);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(120, 17);
+            this.label2.TabIndex = 20;
+            this.label2.Text = "Wybierz drugi plik";
+            // 
+            // nameColRes1
+            // 
+            this.nameColRes1.Text = "Name";
+            // 
+            // pathColRes1
+            // 
+            this.pathColRes1.Text = "Path";
+            this.pathColRes1.Width = 152;
+            // 
+            // nameColRes2
+            // 
+            this.nameColRes2.Text = "Name";
+            // 
+            // pathColRes2
+            // 
+            this.pathColRes2.Text = "Path";
+            this.pathColRes2.Width = 150;
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Location = new System.Drawing.Point(440, 160);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(220, 206);
+            this.richTextBox1.TabIndex = 21;
+            this.richTextBox1.Text = "";
+            // 
+            // richTextBox2
+            // 
+            this.richTextBox2.Location = new System.Drawing.Point(758, 160);
+            this.richTextBox2.Name = "richTextBox2";
+            this.richTextBox2.Size = new System.Drawing.Size(220, 206);
+            this.richTextBox2.TabIndex = 22;
+            this.richTextBox2.Text = "";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(995, 160);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 23;
+            this.button1.Text = "Up";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(995, 194);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 24;
+            this.button2.Text = "Down";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(677, 194);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 26;
+            this.button3.Text = "Down";
+            this.button3.UseVisualStyleBackColor = true;
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(677, 160);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(75, 23);
+            this.button4.TabIndex = 25;
+            this.button4.Text = "Up";
+            this.button4.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(982, 553);
+            this.ClientSize = new System.Drawing.Size(1082, 553);
+            this.Controls.Add(this.button3);
+            this.Controls.Add(this.button4);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.richTextBox2);
+            this.Controls.Add(this.richTextBox1);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.res2ListView);
+            this.Controls.Add(this.res1ListView);
             this.Controls.Add(this.logMess);
             this.Controls.Add(this.compareBttn);
             this.Controls.Add(this.ziarnBox);
@@ -272,6 +414,20 @@ namespace ComparatorServer
         private System.Windows.Forms.TextBox ziarnBox;
         private System.Windows.Forms.Button compareBttn;
         private System.Windows.Forms.RichTextBox logMess;
+        private System.Windows.Forms.ListView res1ListView;
+        private System.Windows.Forms.ListView res2ListView;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ColumnHeader nameColRes1;
+        private System.Windows.Forms.ColumnHeader pathColRes1;
+        private System.Windows.Forms.ColumnHeader nameColRes2;
+        private System.Windows.Forms.ColumnHeader pathColRes2;
+        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.RichTextBox richTextBox2;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button4;
     }
 }
 

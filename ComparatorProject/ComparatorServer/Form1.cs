@@ -11,16 +11,19 @@ using System.Windows.Forms;
 using System.Net.Sockets;
 using System.Threading;
 using System.Net;
+using CompStructures;
 
 namespace ComparatorServer
 {
     public partial class Form1 : Form
     {
         CompConnection conn;
+        private List<FilesCompResult> res = new List<FilesCompResult>();
+        
         public Form1()
         {
             InitializeComponent();
-            conn = new CompConnection(logMess, fileListView);
+            conn = new CompConnection(logMess, fileListView, res);
         }
 
         private void chooseFileBttn_Click(object sender, EventArgs e)
@@ -98,11 +101,41 @@ namespace ComparatorServer
         private void compareBttn_Click(object sender, EventArgs e)
         {
             conn.startComparation(long.Parse(ziarnBox.Text), int.Parse(wzorzBox.Text));
+            
+            foreach (ListViewItem lvi in fileListView.Items)
+            {
+                ListViewItem l1 = (ListViewItem)lvi.Clone();
+                ListViewItem l2 = (ListViewItem)lvi.Clone();
+                res1ListView.Items.Add(l1);
+                res2ListView.Items.Add(l2);
+            }
+
+            if (res1ListView.Items.Count > 0)
+            {
+                res1ListView.Items[0].Selected = true;
+                res1ListView.Select();
+            }
+            if (res2ListView.Items.Count > 0)
+            {
+                res2ListView.Items[0].Selected = true;
+                res2ListView.Select();
+            }
         }
 
         private void fileListView_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void res1ListView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+           
+            
         }
     }
 }

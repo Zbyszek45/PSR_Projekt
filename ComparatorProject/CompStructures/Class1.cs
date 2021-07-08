@@ -131,7 +131,7 @@ namespace CompStructures
 
             if (!compExist)
             {
-                Console.WriteLine("Not found so new result");
+                //Console.WriteLine("Not found so new result");
                 FileSingleResult tmp = new FileSingleResult();
                 tmp.f1 = new List<FilePos>();
                 tmp.f2 = new List<FilePos>();

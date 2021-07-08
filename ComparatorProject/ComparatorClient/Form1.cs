@@ -23,10 +23,15 @@ namespace ComparatorClient
         Socket s;
         private BinaryFormatter bf = new BinaryFormatter();
         private ClientRespone cr = new ClientRespone();
+        private String dir = "files";
 
         public Form1()
         {
             InitializeComponent();
+            int id = System.Diagnostics.Process.GetCurrentProcess().Id;
+            dir += id + "\\";
+            Directory.CreateDirectory(@dir);
+            Console.WriteLine(dir);
            
         }
 
@@ -94,7 +99,7 @@ namespace ComparatorClient
                     foreach (FilePair fp in fh.pairs)
                     {
                         Console.WriteLine(fp.f1);
-                        using (var output = File.Create(@"files\" + fp.f1))
+                        using (var output = File.Create(@dir + fp.f1))
                         {
                             var buffer = new byte[1024];
                             int bytesRead;
@@ -109,7 +114,7 @@ namespace ComparatorClient
                             s.Send(confData, conf.Length, 0);
                         }
                         Console.WriteLine(fp.f2);
-                        using (var output = File.Create(@"files\" + fp.f2))
+                        using (var output = File.Create(@dir + fp.f2))
                         {
                             var buffer = new byte[1024];
                             int bytesRead;
@@ -128,11 +133,13 @@ namespace ComparatorClient
                     // start comparison
                     foreach (FilePair fp in fh.pairs)
                     {
+                        logBox.AppendText("Comparing: " + fp.f1 + fp.f2 +"\n");
+                        Console.WriteLine("Comparing: " + fp.f1 + fp.f2);
                         compareTwoFiles(fp.f1, fp.f2);
                     }
 
                     // send result
-                    
+                    bf.Serialize(stream, cr);
 
                 }
                 catch (Exception ex)
@@ -162,12 +169,14 @@ namespace ComparatorClient
 
         private void clean()
         {
-            System.IO.DirectoryInfo di = new DirectoryInfo("files");
+            System.IO.DirectoryInfo di = new DirectoryInfo(dir);
 
             foreach (FileInfo file in di.GetFiles())
             {
                 file.Delete();
             }
+
+            Directory.Delete(@dir);
         }
 
         private void compareTwoFiles(string f1, string f2)
@@ -176,8 +185,8 @@ namespace ComparatorClient
             fcr.f1Name = f1;
             fcr.f2Name = f2;
             fcr.results = new List<FileSingleResult>();
-            string file1 = System.IO.File.ReadAllText(@"files\" + f1);
-            string file2 = System.IO.File.ReadAllText(@"files\" + f2);
+            string file1 = System.IO.File.ReadAllText(@dir + f1);
+            string file2 = System.IO.File.ReadAllText(@dir + f2);
             
             int count = 0;
             for (int i = 0; i < file2.Length; i++)
@@ -211,20 +220,6 @@ namespace ComparatorClient
             }
 
             // tmp show result
-            foreach (FileSingleResult fsr in fcr.results)
-            {
-                Console.WriteLine("#### RESULT ####");
-                Console.WriteLine("In file: {0}", f1);
-                foreach (FilePos fp in fsr.f1)
-                {
-                    Console.WriteLine("Indeks i,j: "+fp.i+","+fp.j+" - "+file1.Substring((int)fp.i, (int)(fp.j-fp.i)));
-                }
-                Console.WriteLine("In file: {0}", f2);
-                foreach (FilePos fp in fsr.f2)
-                {
-                    Console.WriteLine("Indeks i,j: " + fp.i + "," + fp.j + " - " + file2.Substring((int)fp.i, (int)(fp.j - fp.i)));
-                }
-            }
 
             cr.res.Add(fcr);
 
