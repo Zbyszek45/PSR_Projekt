@@ -71,7 +71,7 @@ namespace ComparatorClient
             catch (Exception ex)
             {
                 logBox.AppendText(ex.ToString() + "\n");
-                Console.WriteLine(ex.ToString());
+                //Console.WriteLine(ex.ToString());
             }
         }
 
@@ -82,7 +82,7 @@ namespace ComparatorClient
                 try
                 {
                     // get header
-                    Console.WriteLine("Waiting for data: ");
+                    //Console.WriteLine("Waiting for data: ");
                     NetworkStream stream = new NetworkStream(s);
                     // deserialize and receive FileHeader
                     FilesHeader fh = (FilesHeader)bf.Deserialize(stream);
@@ -92,7 +92,7 @@ namespace ComparatorClient
                     // check if should stop by pattern == -1
                     if (fh.patternLength == -1)
                     {
-                        Console.WriteLine("Should end");
+                        //Console.WriteLine("Should end");
                         clean();
                         break;
                     }
@@ -100,7 +100,7 @@ namespace ComparatorClient
                     // in loop get the files to compare
                     foreach (FilePair fp in fh.pairs)
                     {
-                        Console.WriteLine(fp.f1);
+                        //Console.WriteLine(fp.f1);
                         using (var output = File.Create(@dir + fp.f1))
                         {
                             var buffer = new byte[1024];
@@ -115,7 +115,7 @@ namespace ComparatorClient
                             Byte[] confData = Encoding.UTF8.GetBytes(conf.ToCharArray());
                             s.Send(confData, conf.Length, 0);
                         }
-                        Console.WriteLine(fp.f2);
+                       // Console.WriteLine(fp.f2);
                         using (var output = File.Create(@dir + fp.f2))
                         {
                             var buffer = new byte[1024];
@@ -138,7 +138,7 @@ namespace ComparatorClient
                     foreach (FilePair fp in fh.pairs)
                     {
                         logBox.AppendText("Comparing: " + fp.f1 + fp.f2 +"\n");
-                        Console.WriteLine("Comparing: " + fp.f1 + fp.f2);
+                        //Console.WriteLine("Comparing: " + fp.f1 + fp.f2);
                         compareTwoFiles(fp.f1, fp.f2);
                     }
                     stopwatch.Stop();
@@ -150,7 +150,7 @@ namespace ComparatorClient
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.ToString());
+                    //Console.WriteLine(ex.ToString());
                     logBox.AppendText(ex.ToString() + "\n");
                 }
             }
@@ -228,7 +228,7 @@ namespace ComparatorClient
                         }
                         fcr.add(new FilePos(i, i + counter), new FilePos(j, j + counter));
                        // fcr2.add(new FilePos(j, j + counter), new FilePos(i, i + counter));
-                        Console.WriteLine(file1.Substring(i, counter));
+                        //Console.WriteLine(file1.Substring(i, counter));
                         j += counter;
                     }
                     else
